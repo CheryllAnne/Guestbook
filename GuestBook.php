@@ -105,7 +105,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
  
                 
-               
+            </form>   
             </div><hr />";
 
 
@@ -115,73 +115,11 @@ error_reporting(E_ALL ^ E_NOTICE);
     /**********************/
 
 
-
+mysqli_close($conn);
 
 ?>
 
-    <input type='submit' name='deletebtn' value='Delete Selected'>
-
-</form>
-<?php
-
-    if(isset($_POST['deletebtn']))
-    {
-        $num = $_POST['num']; //$numberOfBox or $num
-
-        $i=0;
-
-        $sql = "DELETE FROM guestList";
-
-        foreach ($num as $item_id){ //$numberOfBox or $num
-            $i ++;
-
-            if($i==1){
-
-                $sql .= " WHERE id = " . mysqli_real_escape_string($conn, $item_id) . "";
-
-            }else{
-
-                $sql .= " OR id = " . mysqli_real_escape_string($conn, $item_id) . "";
-
-            }
-
-           mysqli_query($conn, $sql) or die(mysqli_error($conn));
-        }
-
-        /*if(is_array($numberOfBox['num']))
-        {
-            $is_empty_multiple = (!count($numberOfBox['num']));
-            $i = 0;
-            while($i<$numberOfBox){
-
-                $keyToDelete = $_POST['num'][$i];
-                $query= mysqli_query($conn, "DELETE FROM guessList WHERE id='$keyToDelete'");
-
-                $i++;
-            }
-        } else{
-            $is_empty_multiple=0;
-        }*/
-
-
-        /*$numberOfBox = count($_POST['num']);
-        //echo $numberOfBox; // to see the number of boxes selected
-        $i = 0;
-        while($i<$numberOfBox){
-
-            $keyToDelete = $_POST['num'][$i];
-            mysqli_query($conn, "DELETE FROM guessList WHERE id='$keyToDelete'");
-
-            $i++;
-        }*/
-
-
-
-    }
-
-    mysqli_close($conn);
-?>
-
+   
 
 </body>
 </html>
