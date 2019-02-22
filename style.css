@@ -24,6 +24,11 @@ h3{
     color: mintcream;
 }
 
+h4{
+    font-size: 12px;
+    color: white;
+}
+
 form{
     margin-top: 50px;
     transition: all 4s ease-in-out;

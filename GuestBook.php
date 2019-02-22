@@ -1,5 +1,6 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
+///include_once 'action.php';
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" >
@@ -8,12 +9,15 @@ error_reporting(E_ALL ^ E_NOTICE);
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title> GuestBook </title>
     <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+</head>
 
 <body>
 
 <?php
+
+
 
 //"http://www.w3.org/TR/xhtmll/DTD/xht"
     //connect to db
@@ -31,6 +35,7 @@ error_reporting(E_ALL ^ E_NOTICE);
                                     // updatebtn was an unset value - runtime error
     if (isset($_POST['updatebtn'])) //isset= test for the existence of a variable or array element without actually trying to access it
     {
+
         $name = strip_tags($_POST['name']); //striptags to avoid cross site scripting
         $email = strip_tags($_POST['email']);
         $comment = strip_tags($_POST['comment']);
@@ -53,7 +58,32 @@ error_reporting(E_ALL ^ E_NOTICE);
             echo "<h1>You have not completed the required information!</h1>";
     }
 
-    echo "<div align='center' xmlns=\"http://www.w3.org/1999/html\"/><form id='form_logs' action = './GuestBook.php' method='post' >
+
+
+        if(isset($_POST['deletebtn'])){
+
+            //if id array is not empty
+
+
+                //get all selected id and convert to string
+                $idStr = implode(',', $_POST['num']);
+                $id= $_POST['id'];
+                //delete records from database
+                $delete = mysqli_query($conn,"DELETE FROM guestList WHERE id IN ($idStr)") or die(mysqli_error($conn));
+
+                //if delete is successful
+                if($delete == true){
+                    $statusMsg = 'Selected comments have been deleted successfully!';
+                }else{
+                    $statusMsg = 'Error occured, please try again.';
+                }
+
+
+        }
+
+
+    echo "<div align='center' xmlns=\"http://www.w3.org/1999/html\"/>
+          <form id='form_logs' action = './GuestBook.php' method='post' >
     <table>
     
         <tr>
@@ -75,13 +105,16 @@ error_reporting(E_ALL ^ E_NOTICE);
             <td><input type='submit' name='updatebtn' value='Update' style='font-size: 16px; font-weight: bold; margin-top: 20px;'  /></td>   
         </tr>
         
+        
     </table>
     </div>
-    </form>";
+    ";
 
     /**********************/
     // display
     echo "<h2> Guest SAYS! </h2>";
+    echo "<h4>$statusMsg</h4>";
+
 
 
     $query = mysqli_query($conn, "SELECT * FROM guestList ORDER BY id DESC");
@@ -98,18 +131,21 @@ error_reporting(E_ALL ^ E_NOTICE);
 
             $comment = nl2br($comment);
 
-            echo "<div class='booklogs' xmlns=\"http://www.w3.org/1999/html\"><form name='form1' action='' method='post'>
-                <input type='checkbox' name='num[]' value='<?php echo $row[id];?>'/>
+            echo "<div class='booklogs' xmlns=\"http://www.w3.org/1999/html\">
+                <form name='form1' action='' method='post' />
+                <input type='checkbox' name='num[]' class='checkbox' value='". $row['id']."'>
                 <h1><b>$name</b> posted at <b>$time</b> on <b>$date</b></h1> <br/>
                 <h3><i>$comment</i></h3>
-
- 
                 
-            </form>   
+                
+                
+            
             </div><hr />";
 
 
         }
+            echo '<input type="submit" name="deletebtn" value="Delete Selected" style="font-size: 16px; font-weight: bold; color: floralwhite ; margin-top: 20px; background-color: blue; border: transparent; margin-bottom: 20px; padding: 10px">';
+            //echo '</form>';
     }else
         echo "<h1>NO POSTS</h1>";
     /**********************/
@@ -118,6 +154,12 @@ error_reporting(E_ALL ^ E_NOTICE);
 mysqli_close($conn);
 
 ?>
+
+</form>
+
+
+
+
 
 
 
